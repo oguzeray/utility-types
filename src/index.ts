@@ -53,6 +53,8 @@ export {
   ValuesType,
   Writable,
   WritableKeys,
+  RequireAtLeastOne,
+  RequireOnlyOne,
 } from './mapped-types';
 
 export {

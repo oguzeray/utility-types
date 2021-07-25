@@ -647,3 +647,44 @@ export type UnionToIntersection<U> = (U extends any
  */
 export type Mutable<T> = { -readonly [P in keyof T]: T[P] };
 export type Writable<T> = Mutable<T>;
+
+/**
+ * @desc Makes at least one of the optional type required
+ * @example
+ *    interface TypeWithMultipleOptionalFields {
+ *      id:number;
+ *      title: string;
+ *      author?: string;
+ *      coAuthor?: string;
+ *      createdAt: Date;
+ *    }
+ * type RequireAtLeastOne<TypeWithMultipleOptionalFields, 'author' | 'coAuthor'>
+ */
+export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
+  T,
+  Exclude<keyof T, Keys>
+> &
+  {
+    [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
+  }[Keys];
+
+/**
+ * @desc Makes one and only one of the optional type required
+ * @example
+ *    interface TypeWithMultipleOptionalFields {
+ *      id: number;
+ *      title: string;
+ *      author: string;
+ *      subtitle?: string;
+ *      updatedAt?: Date;
+ *    }
+ * type RequireOnlyOne<TypeWithMultipleOptionalFields, 'subtitle' | 'updatedAt'>
+ */
+export type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<
+  T,
+  Exclude<keyof T, Keys>
+> &
+  {
+    [K in Keys]-?: Required<Pick<T, K>> &
+      Partial<Record<Exclude<Keys, K>, undefined>>;
+  }[Keys];
